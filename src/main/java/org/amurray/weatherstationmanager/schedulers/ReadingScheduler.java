@@ -7,11 +7,9 @@ import org.amurray.weatherstationmanager.sensors.mock.MockPressureSensor;
 import org.amurray.weatherstationmanager.sensors.mock.MockTemperatureSensor;
 import org.amurray.weatherstationmanager.services.DatabaseService;
 
-import java.sql.DriverManager;
-import java.sql.SQLException;
-import java.time.Instant;
 import java.util.TimerTask;
 
+// TODO: TimerTask only runs on one thread, is this actually a problem?
 public class ReadingScheduler extends TimerTask {
     private final String executionId;
     public ReadingScheduler(String executionId){

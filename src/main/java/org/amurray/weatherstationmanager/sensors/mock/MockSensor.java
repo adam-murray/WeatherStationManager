@@ -27,6 +27,7 @@ public abstract class MockSensor implements Sensor {
 
     protected SensorReading reading(double value, SensorUnit unit) {
         return new SensorReading(
+                id + "@" + Instant.now().toString(),
                 id,
                 type,
                 value,
