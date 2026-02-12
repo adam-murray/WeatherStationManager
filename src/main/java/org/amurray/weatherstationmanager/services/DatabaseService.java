@@ -1,16 +1,19 @@
 package org.amurray.weatherstationmanager.services;
 
+import org.amurray.weatherstationmanager.config.Config;
 import org.amurray.weatherstationmanager.models.SensorReading;
 
 import java.sql.DriverManager;
 import java.sql.SQLException;
 
 public class DatabaseService {
-    private static final String dbUrl = "jdbc:sqlite:weather.db";
+    private static final String dbUrl = Config.get("db.url");
+    private static final String user = Config.get("db.username");
+    private static final String password = Config.get("db.password");
 
     public static void connect() {
-        try (var conn = DriverManager.getConnection(dbUrl)){
-            System.out.println("Connection to SQLite has been established.");
+        try (var conn = DriverManager.getConnection(dbUrl, user, password)){
+            System.out.println("Connection to PostgreSQL has been established.");
         } catch (SQLException e) {
             System.out.println(e.getMessage());
         }
@@ -23,9 +26,9 @@ public class DatabaseService {
                 "sensor_type TEXT NOT NULL," +
                 "sensor_unit TEXT NOT NULL," +
                 "value REAL NOT NULL," +
-                "time_stamp INTEGER NOT NULL" +
+                "time_stamp BIGINT NOT NULL" +
                 ");";
-        try (var conn = DriverManager.getConnection(dbUrl);
+        try (var conn = DriverManager.getConnection(dbUrl, user, password);
             var stmt = conn.createStatement()){
             stmt.execute(sql);
             } catch (SQLException e){
@@ -36,7 +39,7 @@ public class DatabaseService {
         String statement = "INSERT INTO readings (reading_id, sensor_id, sensor_type, sensor_unit, value, time_stamp)"
                 + "VALUES(?,?,?,?,?,?)";
 
-        try (var conn = DriverManager.getConnection(dbUrl);
+        try (var conn = DriverManager.getConnection(dbUrl, user, password);
         var pstmt = conn.prepareStatement(statement)){
             pstmt.setString(1, reading.readingId());
             pstmt.setString(2, reading.sensorId());
@@ -48,6 +51,7 @@ public class DatabaseService {
             pstmt.executeUpdate();
         } catch (SQLException e) {
             System.out.println("Couldn't write to DB");
+            System.out.println(e);
         }
     }
 }
